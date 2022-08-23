@@ -4,8 +4,8 @@ const cors = require('cors');
 const db = require('./models');
 const Project = db.Project;
 const User = db.User;
-const { projects } = require('../src/JSON Data/project.data.json');
-const { users } = require('../src/JSON Data/user.data.json');
+const { projects } = require('../src/JSONData/project.data.json');
+const { users } = require('../src/JSONData/user.data.json');
 var indexRoutes = require('./routes/index');
 
 const app = express();
