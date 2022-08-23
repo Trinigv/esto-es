@@ -1,0 +1,36 @@
+{
+    "projects": [
+        {
+            "title": "Project1",
+            "summary": "Summary of Project1"
+        }, 
+        {
+            "title": "Project2",
+            "summary": "Summary of Project2"   
+        },
+        {
+            "title": "Project3",
+            "summary": "Summary of Project3"   
+        },
+        {
+            "title": "Project4",
+            "summary": "Summary of Project4"   
+        },
+        {
+            "title": "Project5",
+            "summary": "Summary of Project5"   
+        },
+        {
+            "title": "Project6",
+            "summary": "Summary of Project6"   
+        },
+        {
+            "title": "Project7",
+            "summary": "Summary of Project7"   
+        },
+        {
+            "title": "Trini",
+            "summary": "Summary of Project8"   
+        }
+    ]
+}
