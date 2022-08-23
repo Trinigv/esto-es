@@ -1,2 +1,2 @@
 # esto-es
-Backend Challenge 
+Backend Challenge using mySQL, Sequelize, Express
