@@ -10,6 +10,7 @@ var indexRoutes = require('./routes/index');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 require('dotenv').config({ debug: false });
+const { PORT, DB_NAME, DB_HOST, DB_PASSWORD, DB_USER } = process.env;
 
 const app = express();
 
