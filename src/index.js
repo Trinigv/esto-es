@@ -9,16 +9,17 @@ const { users } = require('../src/JSONData/user.data.json');
 var indexRoutes = require('./routes/index');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+require('dotenv').config({ debug: false });
 
 const app = express();
 
 var corsOptions = {
-	origin: 'http://localhost:3000/',
+	origin: process.env.PORT || 'http://localhost:3000/',
 };
 app.use(cors(corsOptions));
 
 db.sequelize.sync({ force: true }).then(() => {
-	app.listen(3000, async () => {
+	app.listen(process.env.PORT || 3000, async () => {
 		console.log('Server is running on port 3000');
 		let check = await Project.findAll();
 		if (check.length === 0) {
@@ -49,7 +50,7 @@ const options = {
 
 		servers: [
 			{
-				url: 'http://localhost:3000',
+				url: process.env.PORT || 'http://localhost:3000',
 				description: 'My API Documentation',
 			},
 		],

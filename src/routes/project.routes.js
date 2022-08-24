@@ -140,6 +140,8 @@ router.get('/:id', findById);
  *     responses:
  *       200:
  *         description: Project deleted.
+ *       404:
+ *         description: Project not found.
  */
 
 router.delete('/:id', hideProject);
@@ -169,7 +171,7 @@ router.delete('/:id', hideProject);
  *           description: title of project
  *         description:
  *           type: string
- *           descripton: description of project *
+ *           descripton: summary of project
  *       example:
  *         project_id:
  *         user_id: 1
