@@ -6,9 +6,32 @@ const {
 	findById,
 	searchByTitle,
 	hideProject,
+	findAllProjects,
 } = require('../services/controllers/project.controllers');
 
 const router = Router();
+
+/**
+ * @swagger
+ * /project/:
+ *   get:
+ *     summary: Find all projects and specify page in query.
+ *     tags: [GETS]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *         required: false
+ *         description: Goes from zero onwards.
+ *     responses:
+ *       200:
+ *         description: Projects returned.
+ *       404:
+ *         description: Projects not found.
+ */
+
+router.get('/', findAllProjects);
 
 /**
  * @swagger

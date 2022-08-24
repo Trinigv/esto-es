@@ -5,6 +5,7 @@ const axios = require('axios');
 const { getPagination, getPagingData } = require('./pagination');
 const { addUser } = require('./user.controllers');
 const { Op } = require('sequelize');
+const { options } = require('../../routes');
 
 const createProject = async (req, res) => {
 	let { title, description, user_id } = req.body;
@@ -105,27 +106,33 @@ const searchByTitle = async (req, res) => {
 	}
 };
 
+const findAllProjects = async (req, res) => {
+	const { page, size } = req.query;
+
+	const { limit, offset } = getPagination(page, size);
+
+	var data = await Project.findAll({
+		where: { status: 'Available' },
+		limit,
+		offset,
+	});
+	const response = getPagingData(data, page, limit);
+	if (data.length === 0) {
+		res.status(404).send('Could not find projects on this page');
+	} else {
+		res.status(200).send(data);
+	}
+};
+
 const hideProject = async (req, res) => {
 	const { id } = req.params;
-	var project = await Project.findOne({
-		where: {
-			[Op.and]: [
-				{
-					deletedAt: null,
-				},
-				{
-					id: id,
-				},
-			],
-		},
-	});
-	if (project.length > 0) {
-		await Project.update({
-			status: 'Unavailable',
-			deletedAt: new Date(),
-		});
+	var updatedRows = await Project.update(
+		{ status: 'Unavailable', deletedAt: new Date() },
+		{ where: { id: id } }
+	);
+	console.log(updatedRows);
+	if (updatedRows.length > 1) {
 		res.status(200).send('Project deleted');
-		return;
 	} else {
 		res.status(404).send('Project not found');
 	}
@@ -137,4 +144,5 @@ module.exports = {
 	findById,
 	searchByTitle,
 	hideProject,
+	findAllProjects,
 };
