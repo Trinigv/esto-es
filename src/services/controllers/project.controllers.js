@@ -1,19 +1,24 @@
 const db = require('../../models');
 const Project = db.Project;
+const User = db.User;
 const axios = require('axios');
 const { getPagination, getPagingData } = require('./pagination');
+const { addUser } = require('./user.controllers');
 const { Op } = require('sequelize');
 
 const createProject = async (req, res) => {
-	let { title, summary } = req.body;
+	let { title, description, user_id } = req.body;
 	if (title.length === 0) {
-		res.status(404).send('Project must have a title');
+		res.status(400).send('Project must have a title');
 	} else {
 		var newProject = await Project.create({
 			title: title,
-			summary: summary,
+			description: description,
 		});
-		res.status(201).send(newProject);
+		//should use addUser function
+		let user = await User.findByPk(user_id);
+		await newProject.addUser(user);
+		res.status(201).send('Project created successfully');
 	}
 };
 
@@ -21,84 +26,109 @@ const findById = async (req, res) => {
 	let { id } = req.params;
 	let idParse = parseInt(id);
 	if (typeof idParse !== 'number') {
-		res.status(400).json({ message: 'Id must be number' });
+		res.status(400).send('Id must be number');
 	} else {
-		let project = await Project.findByPk(id);
+		let project = await Project.findOne({
+			where: {
+				[Op.and]: [
+					{
+						status: 'Available',
+					},
+					{
+						id: id,
+					},
+				],
+			},
+		});
 		if (project) {
-			res.status(200).json(project);
+			res.status(200).send(project);
+			console.log(project);
 		} else {
-			res.status(404).json({
-				message: `Could not find project with id ${id}. Please create new one`,
-			});
+			res.status(404).send(
+				`Could not find project with id ${id}. Please create new one`
+			);
 		}
 	}
 };
 
 const updateProjectInfo = async (req, res) => {
-	const { id } = req.params;
-	const { title, summary } = req.body;
-	let parseId = parseInt(id);
-	if (typeof parseId !== 'number') {
-		res.status(400).send('Id must be a number');
-		return;
-	}
-	if (title.length === 0) {
+	const { project_id, title, description, user_id } = req.body;
+	if (title && title.length === 0) {
 		res.status(400).send('Title can not be empty');
 		return;
 	}
-	try {
-		let currentProject = await Project.findByPk(id);
-		if (currentProject) {
-			await Project.update(
-				{ title: title, summary: summary },
-				{ where: { id: id } }
-			);
-			let updated = await Project.findByPk(id);
-			res.status(200).send(updated);
+	let currentProject = await Project.findOne({
+		where: {
+			[Op.and]: [
+				{
+					status: 'Available',
+				},
+				{
+					id: project_id,
+				},
+			],
+		},
+	});
+	if (currentProject) {
+		await Project.update({ title: title, description: description });
+		let asignee = await User.findByPk(user_id);
+		if (asignee !== null) {
+			await currentProject.addUser(asignee);
+			res.status(200).send('User assigned successfully');
 		}
-	} catch (err) {
-		console.log(err);
+	} else {
+		res.status(404).send('Project not found');
+		return;
 	}
 };
 
 const searchByTitle = async (req, res) => {
-	const { page, size, title } = req.query; //obtained by query but there are default values
+	const { /*page, size,*/ title } = req.query;
 	if (title) {
-		var condition = {
-			//[Op.and]: [
-			title: { [Op.like]: `%${title}%` },
-			//	{ deletedAt: { [Op.is]: null } },
-			//],
-		};
+		var data = await Project.findAll({
+			where: { [Op.and]: [{ deletedAt: null }, { title: title }] },
+		});
+		//const { limit, offset } = getPagination(page, size);
+		//condition,
+		//limit,
+		//offset,
 	}
-	const { limit, offset } = getPagination(page, size);
-	var data = await Project.findAndCountAll({
-		where: { deletedAt: null },
-		condition,
-		limit,
-		offset,
-	});
-	console.log(data);
-	const response = getPagingData(data, page, limit);
-	if (response.totalItems === 0) {
+	//const response = getPagingData(data, page, limit);
+	/*if (response.totalItems === 0) {
 		res.status(404).send(`Project with title ${title} not found`);
 		return;
+	}*/
+	if (data.length !== 0) {
+		res.status(200).send(data);
+	} else {
+		res.status(404).send(`Could not find project with name ${title}`);
 	}
-	res.status(200).send(response);
 };
 
 const hideProject = async (req, res) => {
 	const { id } = req.params;
-	parseId = parseInt(id);
-	if (typeof parseId !== 'number') {
-		res.status(404).send('Id must be a number');
+	var project = await Project.findOne({
+		where: {
+			[Op.and]: [
+				{
+					deletedAt: null,
+				},
+				{
+					id: id,
+				},
+			],
+		},
+	});
+	if (project.length > 0) {
+		await Project.update({
+			status: 'Unavailable',
+			deletedAt: new Date(),
+		});
+		res.status(200).send('Project deleted');
+		return;
+	} else {
+		res.status(404).send('Project not found');
 	}
-	let date = new Date();
-	let project = await Project.update(
-		{ deletedAt: date },
-		{ where: { id: parseId } }
-	);
-	res.status(200).send('Project deleted successfully');
 };
 
 module.exports = {

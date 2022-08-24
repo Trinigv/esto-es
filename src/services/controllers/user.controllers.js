@@ -3,29 +3,21 @@ const User = db.User;
 const Project = db.Project;
 const axios = require('axios');
 
-const insertUser = async (req, res) => {
-	let { username, title } = req.body;
-
-	let activeUser = await User.findOne({ where: { username: username } });
-	let activeProject = await Project.findOne({
-		where: {
-			title: title,
-		},
-	});
+const addUser = async (project_id, user_id, res) => {
+	let activeUser = await User.findByPk(user_id);
+	let activeProject = await Project.findByPk(project_id);
 	if (activeProject === null && activeUser === null) {
 		res.status(404).send('Info is incorrect');
 	} else if (activeProject === null) {
-		res.status(404).json({
-			message: 'Project does not exist! Please select another one',
-		});
+		res.status(404).send(
+			'Project does not exist! Please select another one'
+		);
 	} else if (activeUser === null) {
-		res.status(404).json({ message: 'User does not exist!' });
+		res.status(404).send('User does not exist!');
 	} else {
 		await activeProject.addUser(activeUser);
 		let projectUsers = await Project.findOne({
-			where: {
-				title: title,
-			},
+			where: { id: project_id },
 			include: [{ model: User, through: { attributes: [] } }],
 		});
 		res.status(200).send(projectUsers);
@@ -41,4 +33,4 @@ const createUser = async (req, res) => {
 	res.status(201).json(newUser);
 };
 
-module.exports = { insertUser, createUser };
+module.exports = { addUser, createUser };

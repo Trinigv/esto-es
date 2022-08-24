@@ -7,6 +7,8 @@ const User = db.User;
 const { projects } = require('../src/JSONData/project.data.json');
 const { users } = require('../src/JSONData/user.data.json');
 var indexRoutes = require('./routes/index');
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 const app = express();
 
@@ -36,4 +38,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //simple route
 app.use('/', indexRoutes);
 
-// set port, listen for requests
+const options = {
+	definition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'API',
+			version: '1.0.0',
+			description: 'A simple Express Library API',
+		},
+
+		servers: [
+			{
+				url: 'http://localhost:3000',
+				description: 'My API Documentation',
+			},
+		],
+	},
+	apis: ['src/routes/*.js'],
+};
+
+const specs = swaggerJsDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
