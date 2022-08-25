@@ -52,7 +52,7 @@ const options = {
 		servers: [
 			{
 				url:
-					'https://esto-es-backend.herokuapp.com/api-docs' ||
+					'https://esto-es-backend.herokuapp.com/' ||
 					'http://localhost:3000',
 				description: 'My API Documentation',
 			},
@@ -62,4 +62,4 @@ const options = {
 };
 
 const specs = swaggerJsDoc(options);
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
+app.use('/', swaggerUI.serve, swaggerUI.setup(specs));
