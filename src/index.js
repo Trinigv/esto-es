@@ -43,7 +43,7 @@ const specs = swaggerJsDoc(options);
 
 app.use('/', swaggerUI.serve, swaggerUI.setup(specs));
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
 	app.listen(process.env.PORT || 3000, async () => {
 		console.log('Server is running on port 3000');
 		let check = await Project.findAll();
