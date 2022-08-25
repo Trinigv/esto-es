@@ -126,16 +126,12 @@ const findAllProjects = async (req, res) => {
 
 const hideProject = async (req, res) => {
 	const { id } = req.params;
+
 	var updatedRows = await Project.update(
 		{ status: 'Unavailable', deletedAt: new Date() },
 		{ where: { id: id } }
 	);
-	console.log(updatedRows);
-	if (updatedRows.length > 1) {
-		res.status(200).send('Project deleted');
-	} else {
-		res.status(404).send('Project not found');
-	}
+	res.status(200).send('Project deleted');
 };
 
 module.exports = {
