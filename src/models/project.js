@@ -7,7 +7,6 @@ module.exports = (sequelize) => {
 			id: {
 				type: DataTypes.INTEGER,
 				primaryKey: true,
-				allowNull: false,
 				autoIncrement: true,
 			},
 			title: {
@@ -26,7 +25,8 @@ module.exports = (sequelize) => {
 				allowNull: true,
 			},
 		},
-		{ timestamps: false }
+		{ timestamps: false },
+		{ initialAutoIncrement: 1 }
 	);
 	return Project;
 };

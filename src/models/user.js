@@ -11,7 +11,8 @@ module.exports = (sequelize, Sequelize) => {
 				allowNull: false,
 			},
 		},
-		{ timestamps: false }
+		{ timestamps: false },
+		{ initialAutoIncrement: 1 }
 	);
 	return User;
 };
