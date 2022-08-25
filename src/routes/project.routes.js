@@ -15,7 +15,7 @@ const router = Router();
  * @swagger
  * /project/:
  *   get:
- *     summary: Find all projects and specify page in query.
+ *     summary: Find all projects and specify page number in query.
  *     tags: [GETS]
  *     parameters:
  *       - in: query
@@ -46,7 +46,7 @@ router.get('/', findAllProjects);
  *           schema:
  *             $ref: '#/components/schemas/Post'
  *     responses:
- *       201:
+ *       200:
  *         description: The project was successfully edited
  *         content:
  *           application/json:

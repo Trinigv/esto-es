@@ -54,10 +54,6 @@ const findById = async (req, res) => {
 
 const updateProjectInfo = async (req, res) => {
 	const { project_id, title, description, user_id } = req.body;
-	if (title && title.length === 0) {
-		res.status(400).send('Title can not be empty');
-		return;
-	}
 	let currentProject = await Project.findOne({
 		where: {
 			[Op.and]: [
@@ -70,15 +66,16 @@ const updateProjectInfo = async (req, res) => {
 			],
 		},
 	});
-	if (currentProject) {
-		await Project.update({ title: title, description: description });
-		let asignee = await User.findByPk(user_id);
-		if (asignee !== null) {
-			await currentProject.addUser(asignee);
-			res.status(200).send('User assigned successfully');
-		}
+	currentProject = await Project.update({
+		title: title,
+		description: description,
+	});
+	let asignee = await User.findByPk(user_id);
+	if (asignee !== null) {
+		await currentProject.addUser(asignee);
+		res.status(200).send('User assigned successfully');
 	} else {
-		res.status(404).send('Project not found');
+		res.status(404).send('User or project not found');
 		return;
 	}
 };
