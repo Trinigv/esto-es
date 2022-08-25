@@ -66,11 +66,15 @@ const updateProjectInfo = async (req, res) => {
 			],
 		},
 	});
-	currentProject = await Project.update({
-		title: title,
-		description: description,
-		where: { id: project_id },
-	});
+	await currentProject.update(
+		{
+			title: title,
+			description: description,
+		},
+		{
+			where: { id: project_id },
+		}
+	);
 	let asignee = await User.findByPk(user_id);
 	if (asignee !== null) {
 		await currentProject.addUser(asignee);
