@@ -2,35 +2,51 @@
     "projects": [
         {
             "title": "Project1",
-            "description": "Summary of Project1"
+            "description": "Summary of Project1",
+            "status": "Available",
+            "deletedAt": null
         }, 
         {
             "title": "Project2",
-            "description": "Summary of Project2"   
+            "description": "Summary of Project2",
+            "status": "Available",
+            "deletedAt": null   
         },
         {
             "title": "Project3",
-            "description": "Summary of Project3"   
+            "description": "Summary of Project3",
+            "status": "Available",   
+            "deletedAt": null
         },
         {
             "title": "Project4",
-            "description": "Summary of Project4"   
+            "description": "Summary of Project4",
+            "status": "Available",
+            "deletedAt": null   
         },
         {
             "title": "Project5",
-            "description": "Summary of Project5"   
+            "description": "Summary of Project5",
+            "status": "Available",
+            "deletedAt": null   
         },
         {
             "title": "Project6",
-            "description": "Summary of Project6"   
+            "description": "Summary of Project6",
+            "status": "Available",
+            "deletedAt": null   
         },
         {
             "title": "Project7",
-            "description": "Summary of Project7"   
+            "description": "Summary of Project7",
+            "status": "Available",
+            "deletedAt": null  
         },
         {
             "title": "Trini",
-            "description": "Summary of Project8"   
+            "description": "Summary of Project8",
+            "status": "Available",
+            "deletedAt": null   
         }
     ]
 }

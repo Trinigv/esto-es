@@ -4,7 +4,12 @@ module.exports = (sequelize) => {
 	const Project = sequelize.define(
 		'Project',
 		{
-			//sequelize creates default primary key
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				allowNull: false,
+				autoIncrement: true,
+			},
 			title: {
 				type: DataTypes.STRING,
 				allowNull: false,

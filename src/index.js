@@ -23,9 +23,11 @@ db.sequelize.sync({ force: false }).then(() => {
 	app.listen(process.env.PORT || 3000, async () => {
 		console.log('Server is running on port 3000');
 		let check = await Project.findAll();
+		console.log(check);
 		if (check.length === 0) {
-			await Project.bulkCreate(projects);
-			await User.bulkCreate(users);
+			var allProjects = await Project.bulkCreate(projects);
+			var allUsers = await User.bulkCreate(users);
+			// console.log(allProjects, allUsers);
 		}
 	});
 });
