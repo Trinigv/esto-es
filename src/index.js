@@ -52,7 +52,7 @@ const options = {
 		servers: [
 			{
 				url:
-					'https://esto-es-backend.herokuapp.com' ||
+					'https://esto-es-backend.herokuapp.com/api-docs' ||
 					'http://localhost:3000',
 				description: 'My API Documentation',
 			},
