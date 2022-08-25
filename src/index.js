@@ -51,7 +51,9 @@ const options = {
 
 		servers: [
 			{
-				url: process.env.PORT || 'http://localhost:3000',
+				url:
+					'https://esto-es-backend.herokuapp.com' ||
+					'http://localhost:3000',
 				description: 'My API Documentation',
 			},
 		],
@@ -60,4 +62,4 @@ const options = {
 };
 
 const specs = swaggerJsDoc(options);
-app.use('/', swaggerUI.serve, swaggerUI.setup(specs));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
