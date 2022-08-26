@@ -18,8 +18,8 @@ const createProject = async (req, res) => {
 		});
 		//should use addUser function
 		let user = await User.findByPk(user_id);
-		await newProject.addUser(user);
-		res.status(201).send('Project created successfully');
+		let newProject_user = await newProject.addUser(user);
+		res.status(201).send('Project created successfully', newProject_user);
 	}
 };
 
@@ -45,9 +45,7 @@ const findById = async (req, res) => {
 			res.status(200).send(project);
 			console.log(project);
 		} else {
-			res.status(404).send(
-				`Could not find project with id ${id}. Please create new one`
-			);
+			res.status(404).send(`Could not find project with id ${id}.`);
 		}
 	}
 };
@@ -66,7 +64,7 @@ const updateProjectInfo = async (req, res) => {
 			],
 		},
 	});
-	await currentProject.update(
+	await Project.update(
 		{
 			title: title,
 			description: description,
@@ -77,8 +75,8 @@ const updateProjectInfo = async (req, res) => {
 	);
 	let asignee = await User.findByPk(user_id);
 	if (asignee !== null) {
-		await currentProject.addUser(asignee);
-		res.status(200).send('User assigned successfully');
+		var edited_project = await currentProject.addUser(asignee);
+		res.status(200).send(edited_project);
 	} else {
 		res.status(404).send('User or project not found');
 		return;
