@@ -12,14 +12,31 @@ const createProject = async (req, res) => {
 	if (title.length === 0) {
 		res.status(400).send('Project must have a title');
 	} else {
-		var newProject = await Project.create({
-			title: title,
-			description: description,
+		var project_title = Project.findOne({
+			where: { title: title },
 		});
-		//should use addUser function
+		if (project_title === null) {
+			var newProject = await Project.create({
+				title: title,
+				description: description,
+			});
+		} else {
+			res.status(404).send('Project with that title already exists');
+		}
 		let user = await User.findByPk(user_id);
-		let newProject_user = await newProject.addUser(user);
-		res.status(201).send('Project created successfully', newProject_user);
+		await newProject.addUser(user);
+		var newProject_user = await Project.findOne(
+			{ where: { title: title } },
+			{
+				include: [
+					{
+						model: User,
+						through: { attributes: [] },
+					},
+				],
+			}
+		);
+		res.status(201).send(newProject_user);
 	}
 };
 
@@ -29,18 +46,28 @@ const findById = async (req, res) => {
 	if (typeof idParse !== 'number') {
 		res.status(400).send('Id must be number');
 	} else {
-		let project = await Project.findOne({
-			where: {
-				[Op.and]: [
+		let project = await Project.findOne(
+			{
+				where: {
+					[Op.and]: [
+						{
+							status: 'Available',
+						},
+						{
+							id: id,
+						},
+					],
+				},
+			},
+			{
+				include: [
 					{
-						status: 'Available',
-					},
-					{
-						id: id,
+						model: User,
+						through: { attributes: [] },
 					},
 				],
-			},
-		});
+			}
+		);
 		if (project) {
 			res.status(200).send(project);
 			console.log(project);
@@ -52,53 +79,62 @@ const findById = async (req, res) => {
 
 const updateProjectInfo = async (req, res) => {
 	const { project_id, title, description, user_id } = req.body;
-	let currentProject = await Project.findOne({
-		where: {
-			[Op.and]: [
-				{
-					status: 'Available',
-				},
-				{
-					id: project_id,
-				},
-			],
-		},
+	let checkTitle = Project.findOne({
+		where: { title: title },
 	});
-	await Project.update(
-		{
-			title: title,
-			description: description,
-		},
-		{
-			where: { id: project_id },
+	if (checkTitle === null) {
+		let currentProject = await Project.findOne({
+			where: {
+				[Op.and]: [
+					{
+						status: 'Available',
+					},
+					{
+						id: project_id,
+					},
+				],
+			},
+		});
+		await Project.update(
+			{
+				title: title,
+				description: description,
+			},
+			{
+				where: { id: project_id },
+			}
+		);
+		let asignee = await User.findByPk(user_id);
+		if (asignee !== null) {
+			await currentProject.addUser(asignee);
+			var project_user = await Project.findOne(
+				{ where: { id: project_id } },
+				{
+					include: [
+						{
+							model: User,
+							through: { attributes: [] },
+						},
+					],
+				}
+			);
+			res.status(200).send(project_user);
+		} else {
+			res.status(404).send('User or project not found');
+			return;
 		}
-	);
-	let asignee = await User.findByPk(user_id);
-	if (asignee !== null) {
-		var edited_project = await currentProject.addUser(asignee);
-		res.status(200).send(edited_project);
 	} else {
-		res.status(404).send('User or project not found');
-		return;
+		res.status(404).send('Project title already in use.');
 	}
 };
 
 const searchByTitle = async (req, res) => {
-	const { /*page, size,*/ title } = req.query;
+	const { title } = req.query;
 	if (title) {
 		var data = await Project.findAll({
 			where: { [Op.and]: [{ deletedAt: null }, { title: title }] },
 		});
-		//const { limit, offset } = getPagination(page, size);
-		//condition,
-		//limit,
-		//offset,
 	}
-	//const response = getPagingData(data, page, limit);
-	/*if (response.totalItems === 0) {
-		res.status(404).send(`Project with title ${title} not found`);
-		return;
-	}*/
 	if (data.length !== 0) {
 		res.status(200).send(data);
 	} else {
