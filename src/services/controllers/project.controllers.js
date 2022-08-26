@@ -15,7 +15,8 @@ const createProject = async (req, res) => {
 		var project_title = Project.findOne({
 			where: { title: title },
 		});
-		if (project_title === null) {
+		console.log(project_title);
+		if (typeof project_title !== 'object') {
 			var newProject = await Project.create({
 				title: title,
 				description: description,
@@ -82,7 +83,7 @@ const updateProjectInfo = async (req, res) => {
 	let checkTitle = Project.findOne({
 		where: { title: title },
 	});
-	if (checkTitle === null) {
+	if (typeof checkTitle !== 'object') {
 		let currentProject = await Project.findOne({
 			where: {
 				[Op.and]: [
