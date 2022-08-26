@@ -12,7 +12,7 @@ const createProject = async (req, res) => {
 	if (title.length === 0) {
 		res.status(400).send('Project must have a title');
 	} else {
-		var project_title = Project.findOne({
+		var project_title = await Project.findOne({
 			where: { title: title },
 		});
 		console.log(project_title);
@@ -80,7 +80,7 @@ const findById = async (req, res) => {
 
 const updateProjectInfo = async (req, res) => {
 	const { project_id, title, description, user_id } = req.body;
-	let checkTitle = Project.findOne({
+	let checkTitle = await Project.findOne({
 		where: { title: title },
 	});
 	if (typeof checkTitle !== 'object') {
