@@ -16,7 +16,10 @@ const createProject = async (req, res) => {
 			where: { title: title },
 		});
 		console.log(project_title);
-		if (typeof project_title === null) {
+		if (typeof project_title !== null) {
+			res.status(404).send('Title already in use');
+			return;
+		} else {
 			var newProject = await Project.create({
 				title: title,
 				description: description,
@@ -36,8 +39,6 @@ const createProject = async (req, res) => {
 			);
 			res.status(201).send(newProject_user);
 			return;
-		} else {
-			res.status(404).send('Project with that title already exists');
 		}
 	}
 };
@@ -85,7 +86,10 @@ const updateProjectInfo = async (req, res) => {
 		where: { title: title },
 	});
 	console.log(checkTitle);
-	if (typeof checkTitle === null) {
+	if (typeof checkTitle !== null) {
+		res.status(404).send('Title already in use');
+		return;
+	} else {
 		let currentProject = await Project.findOne({
 			where: {
 				[Op.and]: [
@@ -127,8 +131,6 @@ const updateProjectInfo = async (req, res) => {
 			res.status(404).send('User or project not found');
 			return;
 		}
-	} else {
-		res.status(404).send('Project title already in use.');
 	}
 };
 
