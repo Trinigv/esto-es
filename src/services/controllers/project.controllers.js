@@ -12,34 +12,24 @@ const createProject = async (req, res) => {
 	if (title.length === 0) {
 		res.status(400).send('Project must have a title');
 	} else {
-		var project_title = await Project.findOne({
-			where: { title: title },
+		var newProject = await Project.create({
+			title: title,
+			description: description,
 		});
-		console.log(project_title);
-		if (typeof project_title !== null) {
-			res.status(404).send('Title already in use');
-			return;
-		} else {
-			var newProject = await Project.create({
-				title: title,
-				description: description,
-			});
-			let user = await User.findByPk(user_id);
-			await newProject.addUser(user);
-			var newProject_user = await Project.findOne(
-				{ where: { title: title } },
-				{
-					include: [
-						{
-							model: User,
-							through: { attributes: [] },
-						},
-					],
-				}
-			);
-			res.status(201).send(newProject_user);
-			return;
-		}
+		let user = await User.findByPk(user_id);
+		await newProject.addUser(user);
+		var newProject_user = await Project.findOne(
+			{ where: { title: title } },
+			{
+				include: [
+					{
+						model: User,
+						through: { attributes: [] },
+					},
+				],
+			}
+		);
+		res.status(201).send(newProject_user);
 	}
 };
 
@@ -86,51 +76,46 @@ const updateProjectInfo = async (req, res) => {
 		where: { title: title },
 	});
 	console.log(checkTitle);
-	if (typeof checkTitle !== null) {
-		res.status(404).send('Title already in use');
-		return;
-	} else {
-		let currentProject = await Project.findOne({
-			where: {
-				[Op.and]: [
+	let currentProject = await Project.findOne({
+		where: {
+			[Op.and]: [
+				{
+					status: 'Available',
+				},
+				{
+					id: project_id,
+				},
+			],
+		},
+	});
+	await Project.update(
+		{
+			title: title,
+			description: description,
+		},
+		{
+			where: { id: project_id },
+		}
+	);
+	let asignee = await User.findByPk(user_id);
+	if (asignee !== null) {
+		await currentProject.addUser(asignee);
+		var project_user = await Project.findOne(
+			{ where: { id: project_id } },
+			{
+				include: [
 					{
-						status: 'Available',
-					},
-					{
-						id: project_id,
+						model: User,
+						through: { attributes: [] },
 					},
 				],
-			},
-		});
-		await Project.update(
-			{
-				title: title,
-				description: description,
-			},
-			{
-				where: { id: project_id },
 			}
 		);
-		let asignee = await User.findByPk(user_id);
-		if (asignee !== null) {
-			await currentProject.addUser(asignee);
-			var project_user = await Project.findOne(
-				{ where: { id: project_id } },
-				{
-					include: [
-						{
-							model: User,
-							through: { attributes: [] },
-						},
-					],
-				}
-			);
-			res.status(200).send(project_user);
-			return;
-		} else {
-			res.status(404).send('User or project not found');
-			return;
-		}
+		res.status(200).send(project_user);
+		return;
+	} else {
+		res.status(404).send('User or project not found');
+		return;
 	}
 };
 
