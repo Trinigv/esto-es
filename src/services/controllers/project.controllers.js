@@ -84,10 +84,6 @@ const updateProjectInfo = async (req, res) => {
 			],
 		},
 	});
-	if (currentProject === null) {
-		res.status(404).send('Project does not exist');
-		return;
-	}
 	var new_project = await Project.update(
 		{
 			title: title,
@@ -115,7 +111,6 @@ const updateProjectInfo = async (req, res) => {
 		return;
 	} else {
 		res.status(404).send('User or project not found');
-		return;
 	}
 };
 
