@@ -15,7 +15,7 @@ const router = Router();
  * @swagger
  * /project/:
  *   get:
- *     summary: Find all projects and specify page number in query. (Right now only available page 0 and 1 a)
+ *     summary: Find all projects and specify page number in query. (Right now only available page 0 and 1)
  *     tags: [GETS]
  *     parameters:
  *       - in: query
