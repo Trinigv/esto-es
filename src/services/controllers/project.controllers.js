@@ -16,7 +16,7 @@ const createProject = async (req, res) => {
 			where: { title: title },
 		});
 		console.log(project_title);
-		if (typeof project_title !== 'object') {
+		if (typeof project_title === null) {
 			var newProject = await Project.create({
 				title: title,
 				description: description,
@@ -35,6 +35,7 @@ const createProject = async (req, res) => {
 				}
 			);
 			res.status(201).send(newProject_user);
+			return;
 		} else {
 			res.status(404).send('Project with that title already exists');
 		}
@@ -83,7 +84,8 @@ const updateProjectInfo = async (req, res) => {
 	let checkTitle = await Project.findOne({
 		where: { title: title },
 	});
-	if (typeof checkTitle !== 'object') {
+	console.log(checkTitle);
+	if (typeof checkTitle === null) {
 		let currentProject = await Project.findOne({
 			where: {
 				[Op.and]: [
@@ -120,6 +122,7 @@ const updateProjectInfo = async (req, res) => {
 				}
 			);
 			res.status(200).send(project_user);
+			return;
 		} else {
 			res.status(404).send('User or project not found');
 			return;
