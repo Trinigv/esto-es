@@ -72,11 +72,7 @@ const findById = async (req, res) => {
 
 const updateProjectInfo = async (req, res) => {
 	const { project_id, title, description, user_id } = req.body;
-	let checkTitle = await Project.findOne({
-		where: { title: title },
-	});
-	console.log(checkTitle);
-	let currentProject = await Project.findOne({
+	var currentProject = await Project.findOne({
 		where: {
 			[Op.and]: [
 				{
@@ -88,7 +84,11 @@ const updateProjectInfo = async (req, res) => {
 			],
 		},
 	});
-	await Project.update(
+	if (currentProject === null) {
+		res.status(404).send('Project does not exist');
+		return;
+	}
+	var new_project = await Project.update(
 		{
 			title: title,
 			description: description,
@@ -99,7 +99,7 @@ const updateProjectInfo = async (req, res) => {
 	);
 	let asignee = await User.findByPk(user_id);
 	if (asignee !== null) {
-		await currentProject.addUser(asignee);
+		await new_project.addUser(asignee);
 		var project_user = await Project.findOne(
 			{ where: { id: project_id } },
 			{
