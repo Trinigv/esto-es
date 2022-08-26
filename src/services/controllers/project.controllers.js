@@ -20,23 +20,23 @@ const createProject = async (req, res) => {
 				title: title,
 				description: description,
 			});
+			let user = await User.findByPk(user_id);
+			await newProject.addUser(user);
+			var newProject_user = await Project.findOne(
+				{ where: { title: title } },
+				{
+					include: [
+						{
+							model: User,
+							through: { attributes: [] },
+						},
+					],
+				}
+			);
+			res.status(201).send(newProject_user);
 		} else {
 			res.status(404).send('Project with that title already exists');
 		}
-		let user = await User.findByPk(user_id);
-		await newProject.addUser(user);
-		var newProject_user = await Project.findOne(
-			{ where: { title: title } },
-			{
-				include: [
-					{
-						model: User,
-						through: { attributes: [] },
-					},
-				],
-			}
-		);
-		res.status(201).send(newProject_user);
 	}
 };
 
