@@ -95,7 +95,7 @@ const updateProjectInfo = async (req, res) => {
 	);
 	let asignee = await User.findByPk(user_id);
 	if (asignee !== null) {
-		await new_project.addUser(asignee);
+		await currentProject.addUser(asignee);
 		var project_user = await Project.findOne(
 			{ where: { id: project_id } },
 			{
