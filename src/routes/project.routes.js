@@ -15,7 +15,7 @@ const router = Router();
  * @swagger
  * /project/:
  *   get:
- *     summary: Find all projects and specify page number in query.
+ *     summary: Find all projects and specify page number in query. (Right now only available page 0 and 1 a)
  *     tags: [GETS]
  *     parameters:
  *       - in: query
@@ -37,7 +37,7 @@ router.get('/', findAllProjects);
  * @swagger
  * /project/edit:
  *   post:
- *     summary: Edit a project's title, description and asignees.
+ *     summary: Edit a project's title, description and asignees. Available projects id are 4, 14, 24 etc. User id's include 4, 14, 24.
  *     tags: [POSTS]
  *     requestBody:
  *       required: true
@@ -61,7 +61,7 @@ router.post('/edit', updateProjectInfo);
  * @swagger
  * /project/create:
  *   post:
- *     summary: Create a new project and set asignees.
+ *     summary: Create new project and set asignees. Project id must be null. User's id are 4, 14 and 24.
  *     tags: [POSTS]
  *     requestBody:
  *       required: true
@@ -94,7 +94,7 @@ router.post('/create', createProject);
  *         schema:
  *           type: string
  *         required: true
- *         description: Example... Project1. Not case sensitive.
+ *         description: Project1, project2. Not case sensitive.
  *     responses:
  *       200:
  *         description:  Project returned.
@@ -116,7 +116,7 @@ router.get('/search', searchByTitle);
  *         schema:
  *           type: integer
  *         required: true
- *         description: project id from 1 onwards
+ *         description: Project id can be 4, 14, 24 up to 84 unless new ones are created.
  *     responses:
  *       200:
  *         description:  Project returned.
@@ -136,7 +136,7 @@ router.get('/:id', findById);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Project ID from 1 onwards
+ *         description: project id can be 4, 14, 24 up to 84 unless new ones are created.
  *     responses:
  *       200:
  *         description: Project deleted.
@@ -174,7 +174,7 @@ router.delete('/:id', hideProject);
  *           descripton: summary of project
  *       example:
  *         project_id:
- *         user_id: 1
+ *         user_id: 4
  *         title: my project
  *         description: short summary of project
  *
