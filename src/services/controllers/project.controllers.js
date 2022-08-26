@@ -18,17 +18,15 @@ const createProject = async (req, res) => {
 		});
 		let user = await User.findByPk(user_id);
 		await newProject.addUser(user);
-		var newProject_user = await Project.findOne(
-			{ where: { title: title } },
-			{
-				include: [
-					{
-						model: User,
-						through: { attributes: [] },
-					},
-				],
-			}
-		);
+		var newProject_user = await Project.findOne({
+			where: { title: title },
+			include: [
+				{
+					model: User,
+					through: { attributes: [] },
+				},
+			],
+		});
 		res.status(201).send(newProject_user);
 	}
 };
@@ -96,17 +94,15 @@ const updateProjectInfo = async (req, res) => {
 	let asignee = await User.findByPk(user_id);
 	if (asignee !== null) {
 		await currentProject.addUser(asignee);
-		var project_user = await Project.findOne(
-			{ where: { id: project_id } },
-			{
-				include: [
-					{
-						model: User,
-						through: { attributes: [] },
-					},
-				],
-			}
-		);
+		var project_user = await Project.findAll({
+			where: { id: project_id },
+			include: [
+				{
+					model: User,
+					through: { attributes: [] },
+				},
+			],
+		});
 		res.status(200).send(project_user);
 		return;
 	} else {
