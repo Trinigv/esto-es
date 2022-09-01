@@ -82,7 +82,7 @@ const updateProjectInfo = async (req, res) => {
 			],
 		},
 	});
-	var new_project = await Project.update(
+	await Project.update(
 		{
 			title: title,
 			description: description,
@@ -134,7 +134,7 @@ const findAllProjects = async (req, res) => {
 		limit,
 		offset,
 	});
-	const response = getPagingData(data, page, limit);
+	getPagingData(data, page, limit);
 	if (data.length === 0) {
 		res.status(404).send('Could not find projects on this page');
 	} else {
@@ -145,7 +145,7 @@ const findAllProjects = async (req, res) => {
 const hideProject = async (req, res) => {
 	const { id } = req.params;
 
-	var updatedRows = await Project.update(
+	await Project.update(
 		{ status: 'Unavailable', deletedAt: new Date() },
 		{ where: { id: id } }
 	);
