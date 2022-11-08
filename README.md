@@ -1,7 +1,7 @@
 # esto-es
 Backend Challenge using mySQL, Sequelize, Express
 <br />
-Things to correct: <br />
+
 
 Must Do Corrections: <br />
 
